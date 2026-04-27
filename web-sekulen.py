@@ -5,7 +5,7 @@ import pandas as pd
 st.set_page_config(page_title="Pearl's Sukulen Store", layout="centered")
 
 # --- 1. TULISAN DI ATAS BANNER (Sesuai Permintaan) ---
-st.markdown("<h1 style='text-align: center;'>🌵 Pearl's Sukulen Store</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>🌵 Welcome to</h1>", unsafe_allow_html=True)
 
 # --- 2. BANNER GAMBAR ---
 try:
