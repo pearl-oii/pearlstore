@@ -1,4 +1,4 @@
-nama;kategori;harga;stok;gambar;status
+nama;kategori;harga;stok;foto;status
 Sukulen Mini;mini;10000;100;mini.jpg;tersedia
 Sukulen Medium;medium;25000;55;medium.jpg;tersedia
 Sukulen Mix;mix;60000;8;mix.jpg;tersedia

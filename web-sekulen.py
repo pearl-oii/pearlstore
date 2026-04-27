@@ -4,63 +4,80 @@ import pandas as pd
 # Set judul halaman
 st.set_page_config(page_title="Pearl's Sukulen Store", layout="centered")
 
-# --- BANNER GAMBAR DARI CANVA ---
-# Ganti 'banner.png' dengan nama file banner kamu di GitHub
+# --- 1. TULISAN DI ATAS BANNER (Sesuai Permintaan) ---
+st.markdown("<h1 style='text-align: center;'>🌵 Pearl's Sukulen Store</h1>", unsafe_allow_html=True)
+
+# --- 2. BANNER GAMBAR ---
 try:
     st.image("banner.jpg", use_container_width=True)
 except:
-    st.write("*(Banner belum terload, pastikan nama filenya benar)*")
-
-# --- JUDUL TEKS ---
-st.title("🌵 Pearl's Sukulen Store")
-st.write("Selamat datang! Temukan koleksi sukulen terbaik untuk mempercantik ruangan Anda.")
-
-# ... (sisa kodingan lainnya tetap sama)
+    pass
 
 st.divider()
 
-# --- MEMBACA DATA ---
+# --- 3. INFORMASI PENGIRIMAN ---
+with st.expander("🚚 Informasi Pengiriman", expanded=True):
+    st.write("- ✅ Bisa kirim seluruh Indonesia\n- ✅ Sudah termasuk pot\n- ✅ Tanaman sehat & akar jalan\n- ✅ Packing aman\n- ⚠️ Harga belum termasuk ongkir")
+
+st.divider()
+
+# --- 4. BACA DATA PRODUK ---
 try:
-    # Pastikan file CSV kamu namanya tetap Buku1.csv di GitHub
-    df = pd.read_csv("Buku1.csv")
-    
-    # --- LOOPING PRODUK ---
+    df = pd.read_csv("Buku1.csv", sep=None, engine='python')
+    df.columns = [c.strip().lower() for c in df.columns]
+
     for index, row in df.iterrows():
-        # Menampilkan Nama Produk
-        st.subheader(row['nama'])
+        # --- LOGIKA EMOJI SAMPING NAMA PRODUK ---
+        nama_asli = row['nama']
+        nama_kecil = str(nama_asli).lower()
         
-        # Menampilkan Gambar
-        st.image(row['gambar'], use_container_width=True)
+        if "mini" in nama_kecil:
+            nama_display = f"🪴 {nama_asli}"
+        elif "medium" in nama_kecil:
+            nama_display = f"🌿 {nama_asli}"
+        elif "mix" in nama_kecil:
+            nama_display = f"🌵 {nama_asli}"
+        else:
+            nama_display = f"✨ {nama_asli}"
+
+        # Tampilkan Nama dengan Emoji
+        st.subheader(nama_display)
         
-        # Menampilkan Harga dengan /pcs
-        harga_format = f"{row['harga']:,}".replace(',', '.')
-        st.write(f"### Rp {harga_format}/pcs")
+        # Tampilkan Gambar
+        try:
+            kolom_img = 'foto' if 'foto' in df.columns else 'gambar'
+            st.image(row[kolom_img], use_container_width=True)
+        except:
+            st.write("*(Gambar sedang disiapkan)*")
         
-        # Menampilkan Stok
+        # Harga & Stok
+        try:
+            harga_angka = int(str(row['harga']).replace('.','').replace(',',''))
+            harga_format = f"{harga_angka:,}".replace(',', '.')
+            st.write(f"### Rp {harga_format}/pcs")
+        except:
+            st.write(f"### Rp {row['harga']}/pcs")
+            
         st.write(f"Stok: {row['stok']}")
         
-        # --- DETAIL UKURAN ---
+        # Detail Ukuran
         with st.expander("Lihat Detail Ukuran"):
-            nama_produk = row['nama'].lower()
-            if "mini" in nama_produk:
+            if "mini" in nama_kecil:
                 st.write("📏 **Diameter pot:** 5 cm")
-            elif "medium" in nama_produk:
+            elif "medium" in nama_kecil:
                 st.write("📏 **Diameter pot:** 10 cm")
-            elif "mix" in nama_produk:
-                st.write("📏 **Diameter pot:** 15 cm")
-                st.write("📦 **Isi:** 2 Sukulen Medium + 3 Sukulen Mini")
-        
-        # Tombol Pesan per Produk
-        st.link_button(f"Pesan {row['nama']}", f"https://wa.me/628123456789?text=Halo%20Pearl's%20Sukulen,%20saya%20mau%20pesan%20{row['nama']}")
-        
+            elif "mix" in nama_kecil:
+                st.write("📏 **Diameter pot:** 15 cm (Pot Besar)")
+                st.write("📦 **Isi Paket:** 2 Medium + 3 Mini")
+            
+        # Tombol WA
+        st.link_button(f"Pesan {nama_asli}", f"https://wa.me/6281325390391?text=Halo%20Pearl's%20Sukulen,%20saya%20mau%20pesan%20{nama_asli}")
         st.divider()
 
 except Exception as e:
-    st.error(f"Gagal memuat data produk: {e}")
+    st.error(f"Data belum muncul: {e}")
 
-# --- BAGIAN BAWAH (FOOTER) ---
+# --- 5. FOOTER ---
 st.markdown("### 📞 Hubungi Kami")
-st.write("Klik tombol di bawah untuk tanya-tanya atau pemesanan:")
 st.link_button("📲 Chat via WhatsApp", "https://wa.me/6281325390391")
-
-st.caption("© 2026 Pearl's Sukulen Store - Mutiara")
+st.caption("© 2026 Pearl's Sukulen Store - Mutiara Atha")
