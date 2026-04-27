@@ -71,7 +71,7 @@ try:
                 st.write("📦 **Isi Paket:** 2 Medium + 3 Mini")
             
         # Tombol WA
-        st.link_button(f"Pesan {nama_asli}", f"https://wa.me/6281325390391?text=Halo%20Pearl's%20Sukulen,%20saya%20mau%20pesan%20{nama_asli}")
+        st.link_button(f"Pesan {nama_asli}", f"https://wa.me/6281325390391?text=Halo%20Mutiara,%20saya%20mau%20pesan%20{nama_asli}")
         st.divider()
 
 except Exception as e:
