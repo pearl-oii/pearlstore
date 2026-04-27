@@ -1,80 +1,66 @@
 import streamlit as st
 import pandas as pd
-import os
 
-# --- 1. PENGATURAN HALAMAN ---
-st.set_page_config(page_title="Pearl's Sukulen Store", layout="wide")
+# Set judul halaman
+st.set_page_config(page_title="Pearl's Sukulen Store", layout="centered")
 
-# --- 2. BAGIAN HEADER (JUDUL & BANNER) ---
-st.title("🌵 Pearl's Sukulen Store")
-
-# Cek apakah ada file banner.jpg atau banner.png di folder
-if os.path.exists("banner.jpg"):
-    st.image("banner.jpg", use_container_width=True)
-elif os.path.exists("banner.png"):
-    st.image("banner.png", use_container_width=True)
-else:
-    st.info("Tips: Masukkan file 'banner.jpg' ke folder website biar makin cantik!")
-
-# Kotak Informasi Pengiriman (Biar mirip punya temanmu)
-st.success("""
-📍 **Informasi Pengiriman:**
-* Tanaman sehat, akar jalan, packing aman dengan kardus tebal.
-* Bisa kirim ke seluruh Indonesia.
-""")
-
-# --- 3. LOAD DATA DARI CSV ---
+# --- BANNER GAMBAR DARI CANVA ---
+# Ganti 'banner.png' dengan nama file banner kamu di GitHub
 try:
-    # Membaca CSV dengan deteksi otomatis pemisah
-    df = pd.read_csv('Buku1.csv', sep=None, engine='python')
+    st.image("banner.jpg", use_container_width=True)
+except:
+    st.write("*(Banner belum terload, pastikan nama filenya benar)*")
+
+# --- JUDUL TEKS ---
+st.title("🌵 Pearl's Sukulen Store")
+st.write("Selamat datang! Temukan koleksi sukulen terbaik untuk mempercantik ruangan Anda.")
+
+# ... (sisa kodingan lainnya tetap sama)
+
+st.divider()
+
+# --- MEMBACA DATA ---
+try:
+    # Pastikan file CSV kamu namanya tetap Buku1.csv di GitHub
+    df = pd.read_csv("Buku1.csv")
     
-    # Bersihkan nama kolom (kecilkan semua & hapus spasi)
-    df.columns = df.columns.str.strip().str.lower()
-
-    if 'kategori' in df.columns:
-        df['kategori'] = df['kategori'].fillna('Lainnya')
-        kategori_list = df['kategori'].unique()
-
-        # Looping per Kategori
-        for kat in kategori_list:
-            st.header(f"Kategori: {kat}")
-            data_per_kat = df[df['kategori'] == kat]
-
-            # Membuat kolom (max 4 produk per baris)
-            cols = st.columns(4)
-            for index, row in data_per_kat.reset_index().iterrows():
-                with cols[index % 4]:
-                    # --- LOGIKA PENCARIAN FOTO ---
-                    nama_foto_csv = str(row['foto']).strip().split('.')[0]
-                    foto_final = None
-                    
-                    # Cari file yang namanya mirip di folder
-                    for file_dalam_folder in os.listdir():
-                        if file_dalam_folder.lower().startswith(nama_foto_csv.lower()):
-                            foto_final = file_dalam_folder
-                            break
-                    
-                    if foto_final:
-                        st.image(foto_final, use_container_width=True)
-                    else:
-                        st.warning(f"Foto '{nama_foto_csv}' tidak ketemu")
-                    
-                    # Info Produk
-                    st.subheader(row['nama'])
-                    st.write(f"### **Rp {row['harga']:,}**")
-                    st.write(f"Stok: {row['stok']}")
-                    
-                    # Tombol Pesan
-                    if st.button(f"Pesan {row['nama']}", key=f"btn_{index}_{kat}"):
-                        st.balloons() # Efek balon biar seru!
-                        st.success(f"Berhasil masuk keranjang!")
-            st.divider()
-    else:
-        st.error("Kolom 'kategori' tidak ditemukan di CSV!")
+    # --- LOOPING PRODUK ---
+    for index, row in df.iterrows():
+        # Menampilkan Nama Produk
+        st.subheader(row['nama'])
+        
+        # Menampilkan Gambar
+        st.image(row['gambar'], use_container_width=True)
+        
+        # Menampilkan Harga dengan /pcs
+        harga_format = f"{row['harga']:,}".replace(',', '.')
+        st.write(f"### Rp {harga_format}/pcs")
+        
+        # Menampilkan Stok
+        st.write(f"Stok: {row['stok']}")
+        
+        # --- DETAIL UKURAN ---
+        with st.expander("Lihat Detail Ukuran"):
+            nama_produk = row['nama'].lower()
+            if "mini" in nama_produk:
+                st.write("📏 **Diameter pot:** 5 cm")
+            elif "medium" in nama_produk:
+                st.write("📏 **Diameter pot:** 10 cm")
+            elif "mix" in nama_produk:
+                st.write("📏 **Diameter pot:** 15 cm")
+                st.write("📦 **Isi:** 2 Sukulen Medium + 3 Sukulen Mini")
+        
+        # Tombol Pesan per Produk
+        st.link_button(f"Pesan {row['nama']}", f"https://wa.me/628123456789?text=Halo%20Pearl's%20Sukulen,%20saya%20mau%20pesan%20{row['nama']}")
+        
+        st.divider()
 
 except Exception as e:
-    st.error(f"Terjadi kesalahan: {e}")
+    st.error(f"Gagal memuat data produk: {e}")
 
-# --- 4. SIDEBAR ---
-st.sidebar.header("Hubungi Penjual")
-st.sidebar.link_button("💬 Chat di WhatsApp", "https://wa.me/6281325390391")
+# --- BAGIAN BAWAH (FOOTER) ---
+st.markdown("### 📞 Hubungi Kami")
+st.write("Klik tombol di bawah untuk tanya-tanya atau pemesanan:")
+st.link_button("📲 Chat via WhatsApp", "https://wa.me/6281325390391")
+
+st.caption("© 2026 Pearl's Sukulen Store - Mutiara")

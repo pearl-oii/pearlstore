@@ -1,4 +1,4 @@
-nama;kategori;harga;stok;foto;status
-sekulen mini;mini;10000;100;mini.jpg;tersedia
-sekulen medium;medium;25000;55;medium.jpg;tersedia
-sekulen mix;mix;50000;8;mix.jpg;tersedia
+nama;kategori;harga;stok;gambar;status
+Sukulen Mini;mini;10000;100;mini.jpg;tersedia
+Sukulen Medium;medium;25000;55;medium.jpg;tersedia
+Sukulen Mix;mix;60000;8;mix.jpg;tersedia
